@@ -1,0 +1,3036 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CPK Hagen — Chirurgische Praxisklinik</title>
+  <link rel="icon" href="brand_assets/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="brand_assets/cpk-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ════════════════════════════════════════════
+       DESIGN TOKENS
+    ════════════════════════════════════════════ */
+    :root {
+      /* Green palette — used sparingly */
+      --g-900:   #111C12;
+      --g-800:   #1A3020;   /* dark section backgrounds */
+      --g-700:   #2D5A2A;   /* brand green (logo) — primary */
+      --g-600:   #3A6630;   /* active accent */
+      --g-500:   #4A7A3C;   /* hover tones */
+      --g-100:   #EAF1E8;
+      --g-50:    #F2F6F1;
+
+      /* Neutrals */
+      --dark:       #0E0E0D;
+      --coal:       #1A1A18;
+      --ink:        #282826;
+      --smoke:      #525250;
+      --silver:     #9A9A96;
+      --cloud:      #D0D0CC;
+      --mist:       #E8E8E4;
+      --off-white:  #F7F7F3;
+      --white:      #FFFFFF;
+
+      /* Radii */
+      --r-full: 100px;
+
+      /* Easing */
+      --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* ════════════════════════════════════════════
+       RESET / BASE
+    ════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 112px;
+    }
+
+    @keyframes pageFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--dark);
+      background: var(--off-white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      animation: pageFadeIn 0.68s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    img { display: block; max-width: 100%; }
+    a   { text-decoration: none; color: inherit; }
+    ul  { list-style: none; }
+
+    /* ════════════════════════════════════════════
+       SCROLL REVEAL
+    ════════════════════════════════════════════ */
+    /* ONE transition, never overridden — browser always fires both enter and exit */
+    .r-up, .r-left, .r-right, .r-scale {
+      will-change: transform, opacity;
+      transition: opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .r-up    { opacity: 0; transform: translateY(16px); }
+    .r-left  { opacity: 0; transform: translateX(-12px); }
+    .r-right { opacity: 0; transform: translateX(12px); }
+    .r-scale { opacity: 0; transform: translateY(6px); }
+
+    /* Enter — only visual values, NO transition override */
+    .r-up.in, .r-left.in, .r-right.in, .r-scale.in {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* Stagger — organic non-linear spacing */
+    .d1 { transition-delay: 0s; }
+    .d2 { transition-delay: 0.10s; }
+    .d3 { transition-delay: 0.22s; }
+    .d4 { transition-delay: 0.36s; }
+    .d5 { transition-delay: 0.52s; }
+
+    ::selection { background: rgba(45, 90, 42, 0.13); color: var(--dark); }
+
+    /* ════════════════════════════════════════════
+       FLOATING PILL NAVBAR
+    ════════════════════════════════════════════ */
+    .nav-shell {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 56px);
+      max-width: 1280px;
+      z-index: 900;
+      animation: navFadeIn 0.6s ease 0.15s backwards;
+      transition: transform 0.54s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.42s ease;
+    }
+    .nav-shell.nav-hidden { transform: translateX(-50%) translateY(-120%); }
+    .nav-shell.nav-wow {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(-14px);
+    }
+
+    @keyframes navFadeIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    .nav-pill {
+      background: rgba(252, 252, 250, 0.93);
+      backdrop-filter: blur(32px) saturate(200%);
+      -webkit-backdrop-filter: blur(32px) saturate(200%);
+      border-radius: var(--r-full);
+      border: 1px solid rgba(255,255,255,0.80);
+      box-shadow:
+        0 4px 32px rgba(0,0,0,0.07),
+        0 1px 4px  rgba(0,0,0,0.04),
+        inset 0 1px 0 rgba(255,255,255,1);
+      height: 80px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      padding: 0 8px 0 16px;
+      transition: box-shadow 0.52s ease, background 0.4s ease;
+    }
+
+    .nav-shell.scrolled .nav-pill {
+      box-shadow:
+        0 8px 48px rgba(0,0,0,0.11),
+        0 2px 8px  rgba(0,0,0,0.06),
+        inset 0 1px 0 rgba(255,255,255,1);
+    }
+
+    /* Logo — inline, no badge */
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      margin-right: 32px;
+      text-decoration: none;
+      opacity: 1;
+      transition: opacity 0.18s ease;
+    }
+    .nav-logo:hover { opacity: 0.78; }
+    .nav-logo img {
+      height: 130px;
+      width: auto;
+      max-height: none;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Centered nav links */
+    .nav-links {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+    }
+    .nav-links a {
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.008em;
+      padding: 8px 13px;
+      border-radius: var(--r-full);
+      transition: background 0.24s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+    }
+    .nav-links a:hover {
+      background: rgba(0,0,0,0.055);
+      color: var(--dark);
+    }
+
+    /* Green CTA button */
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 20px;
+      background: var(--g-700);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      border-radius: var(--r-full);
+      flex-shrink: 0;
+      transition:
+        background 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.30s cubic-bezier(0.16, 1, 0.3, 1),
+        transform  0.28s var(--ease-spring);
+    }
+    .nav-cta:hover {
+      background: var(--g-600);
+      box-shadow: 0 4px 20px rgba(45,90,42,0.28);
+      transform: translateY(-1px);
+    }
+    .nav-cta:hover .ico { transform: translateX(3px); }
+    .nav-cta:active { transform: translateY(0); }
+
+    /* ════════════════════════════════════════════
+       BUTTONS
+    ════════════════════════════════════════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.012em;
+      border-radius: var(--r-full);
+      transition:
+        background 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+        color      0.24s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.30s cubic-bezier(0.16, 1, 0.3, 1),
+        transform  0.32s var(--ease-spring);
+    }
+    .btn:active { transform: translateY(0) !important; }
+
+    .btn-green {
+      padding: 14px 28px;
+      background: var(--g-700);
+      color: #fff;
+    }
+    .btn-green:hover {
+      background: var(--g-600);
+      box-shadow: 0 5px 24px rgba(45,90,42,0.28);
+      transform: translateY(-2px);
+    }
+    .btn-green:hover .ico { transform: translateX(3px); }
+
+    .btn-ghost-white {
+      padding: 13px 26px;
+      border: 1px solid rgba(255,255,255,0.28);
+      color: rgba(255,255,255,0.76);
+    }
+    .btn-ghost-white:hover {
+      border-color: rgba(255,255,255,0.55);
+      color: #fff;
+      background: rgba(255,255,255,0.07);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline-dark {
+      padding: 13px 24px;
+      border: 1.5px solid rgba(40,40,38,0.75);
+      color: var(--ink);
+    }
+    .btn-outline-dark:hover {
+      background: var(--dark);
+      border-color: var(--dark);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.16);
+    }
+    .btn-outline-dark:hover .ico { transform: translateX(3px); }
+
+    .btn-white {
+      padding: 14px 28px;
+      background: #fff;
+      color: var(--g-700);
+    }
+    .btn-white:hover {
+      background: var(--g-50);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline-green {
+      padding: 13px 24px;
+      border: 1.5px solid var(--g-700);
+      color: var(--g-700);
+    }
+    .btn-outline-green:hover {
+      background: var(--g-700);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .btn-outline-green:hover .ico { transform: translateX(3px); }
+
+    .ico { width: 13px; height: 13px; flex-shrink: 0; transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1); }
+
+    /* ════════════════════════════════════════════
+       HERO
+    ════════════════════════════════════════════ */
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 680px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .hero-bg img {
+      width: 100%;
+      height: 110%;
+      object-fit: cover;
+      object-position: center 35%;
+      display: block;
+      transform: scale(1.08);
+      transform-origin: center top;
+      will-change: transform;
+    }
+
+    /* Neutral-dark overlay — no green tint */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(110deg,
+          rgba(6,8,7,0.88) 0%,
+          rgba(8,11,9,0.68) 38%,
+          rgba(8,11,9,0.28) 64%,
+          rgba(8,11,9,0.06) 100%),
+        linear-gradient(to top,
+          rgba(5,8,6,0.72) 0%,
+          transparent 50%);
+    }
+
+    .hero-grain {
+      position: absolute; inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 60px 104px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      animation: hFadeUp 1s var(--ease-spring) 0.35s both;
+    }
+    .hero-eyebrow-line {
+      width: 28px;
+      height: 1.5px;
+      background: rgba(255,255,255,0.38);
+    }
+    .hero-eyebrow span {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.48);
+    }
+
+    /* Refined Manrope heading — precise, not aggressive */
+    .hero-h1 {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(50px, 7.4vw, 96px);
+      font-weight: 800;
+      line-height: 0.94;
+      letter-spacing: -0.038em;
+      color: #fff;
+      max-width: 980px;
+    }
+    .hero-line {
+      display: block;
+      overflow: hidden;
+      padding-bottom: 0.20em;
+      margin-bottom: -0.13em;
+    }
+    .hero-line-inner {
+      display: block;
+      animation: hLineUp 1.2s var(--ease-spring) both;
+    }
+    .hero-line:nth-child(1) .hero-line-inner { animation-delay: 0.48s; }
+    .hero-line:nth-child(2) .hero-line-inner { animation-delay: 0.64s; }
+    .hero-line:nth-child(3) .hero-line-inner { animation-delay: 0.80s; }
+
+    /* Muted green accent — more subtle, medical */
+    .hero-accent { color: var(--g-500); }
+
+    .hero-sub {
+      margin-top: 26px;
+      max-width: 480px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.74;
+      color: rgba(255,255,255,0.56);
+      font-weight: 400;
+      animation: hFadeUp 1s var(--ease-spring) 1.02s both;
+    }
+
+    .hero-actions {
+      margin-top: 38px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      animation: hFadeUp 1s var(--ease-spring) 1.14s both;
+    }
+
+    /* ── Clinic opening status badge ── */
+    .clinic-status {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 22px;
+      animation: hFadeUp 1s var(--ease-spring) 1.38s both;
+    }
+    .clinic-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: background-color 0.5s ease;
+    }
+    .clinic-status-dot.is-open   { background: var(--g-500); }
+    .clinic-status-dot.is-closed { background: rgba(220,80,80,0.70); }
+    .clinic-status-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.012em;
+      color: rgba(220,100,100,0.70);
+      line-height: 1;
+      transition: color 0.5s ease;
+    }
+    .clinic-status-dot.is-open ~ .clinic-status-text {
+      color: var(--g-500);
+    }
+
+    /* Restrained accent bar */
+    .hero-bar {
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 4px; height: 130px;
+      background: var(--g-600);
+      z-index: 3;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px; left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      z-index: 3;
+      animation: hFadeUp 1s var(--ease-spring) 1.5s both;
+    }
+    .hero-scroll span {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.26);
+    }
+    .scroll-bar {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.32), transparent);
+      animation: scrollPulse 3.4s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%,100% { opacity: 0.28; transform: scaleY(1) translateY(0); }
+      50%      { opacity: 0.68; transform: scaleY(0.58) translateY(10px); }
+    }
+    @keyframes hLineUp {
+      from { transform: translateY(110%); }
+      to   { transform: translateY(0); }
+    }
+    @keyframes hFadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ════════════════════════════════════════════
+       INTRO
+    ════════════════════════════════════════════ */
+    .intro {
+      background: var(--off-white);
+      padding: 116px 0 104px;
+    }
+    .intro-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 60px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 64px;
+      flex-wrap: wrap;
+    }
+    .intro-h2 {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(40px, 6vw, 78px);
+      font-weight: 800;
+      letter-spacing: -0.040em;
+      line-height: 0.97;
+      color: var(--dark);
+      flex: 1 1 340px;
+    }
+    .intro-right {
+      flex: 0 1 400px;
+    }
+    .intro-right p {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.78;
+      color: var(--smoke);
+      margin-bottom: 30px;
+    }
+
+    /* ════════════════════════════════════════════
+       SECTION LABEL
+    ════════════════════════════════════════════ */
+    .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--g-600);
+      margin-bottom: 14px;
+    }
+    .label::before {
+      content: '';
+      display: block;
+      width: 18px; height: 1.5px;
+      background: var(--g-600);
+    }
+
+    /* ════════════════════════════════════════════
+       STORY SCROLL — STICKY CINEMATIC SECTION
+    ════════════════════════════════════════════ */
+    .story-scroll {
+      position: relative;
+      height: 100vh;
+    }
+    .story-sticky {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 56% 44%;
+      overflow: hidden;
+      background: var(--g-800);
+    }
+    .story-img-wrap {
+      position: relative;
+      overflow: hidden;
+      border-right: 2px solid var(--g-700);
+    }
+    .story-img {
+      position: absolute;
+      inset: -6%;
+      object-fit: cover;
+      object-position: center 32%;
+      width: calc(100% + 12%);
+      height: calc(100% + 12%);
+      will-change: transform;
+    }
+    .story-img-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        linear-gradient(to right,  rgba(8,14,10,0.30) 0%, transparent 52%),
+        linear-gradient(to top,    rgba(8,14,10,0.50) 0%, transparent 44%),
+        linear-gradient(to bottom, rgba(8,14,10,0.16) 0%, transparent 32%);
+    }
+    .story-panels-wrap {
+      position: relative;
+      background: var(--off-white);
+      overflow: hidden;
+    }
+    .story-panel {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 72px;
+      opacity: 0;
+      pointer-events: none;
+      will-change: opacity, transform;
+    }
+    .story-panel.sp-active {
+      pointer-events: auto;
+    }
+    .story-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--g-600);
+      margin-bottom: 26px;
+    }
+    .story-label::before {
+      content: '';
+      display: block;
+      width: 18px;
+      height: 1.5px;
+      background: var(--g-600);
+      flex-shrink: 0;
+    }
+    .story-h2 {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(52px, 6.4vw, 88px);
+      font-weight: 800;
+      line-height: 0.93;
+      letter-spacing: -0.038em;
+      color: var(--dark);
+      margin-bottom: 28px;
+    }
+    .story-body {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(15px, 1.15vw, 17px);
+      line-height: 1.80;
+      color: var(--smoke);
+      max-width: 360px;
+    }
+    .story-cta-wrap {
+      margin-top: 40px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.55s ease 0.30s, transform 0.55s cubic-bezier(0.22,1,0.36,1) 0.30s;
+    }
+    .story-panel.sp-active .story-cta-wrap {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .story-dots {
+      position: absolute;
+      right: 28px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .story-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--cloud);
+      transition: background 0.4s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1);
+    }
+    .story-dot.sd-active {
+      background: var(--g-700);
+      transform: scale(1.5);
+    }
+
+    /* ── WOW section exit → intro entrance ── */
+    .intro-entering {
+      animation: introEntrance 0.72s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    @keyframes introEntrance {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    /* ════════════════════════════════════════════
+       FEATURE SECTIONS
+    ════════════════════════════════════════════ */
+    .feature { padding: 108px 0; }
+    .feature-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 96px;
+      align-items: center;
+    }
+    .feature-h2 {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(28px, 3.8vw, 50px);
+      font-weight: 700;
+      letter-spacing: -0.034em;
+      line-height: 1.08;
+      color: var(--dark);
+      margin: 6px 0 20px;
+    }
+    .feature-body {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.80;
+      color: var(--smoke);
+      margin-bottom: 26px;
+    }
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 34px;
+    }
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.58;
+    }
+    .feature-list li::before {
+      content: '';
+      width: 5px; height: 5px;
+      background: var(--g-600);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+
+    .feature-img {
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    .feature-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(26,48,32,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .feature-img img {
+      width: 100%;
+      height: 520px;
+      object-fit: cover;
+      filter: brightness(0.95) contrast(1.05) saturate(0.88);
+      transition: transform 0.95s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.90s ease;
+    }
+    .feature-img:hover img {
+      transform: scale(1.03);
+      filter: brightness(0.97) contrast(1.04) saturate(0.96);
+    }
+    .feature-accent {
+      position: absolute;
+      width: 80px; height: 80px;
+      background: var(--g-100);
+      border: 2px solid rgba(58,102,48,0.25);
+      z-index: -1;
+    }
+    .acc-bl { bottom: -20px; left: -20px; }
+    .acc-tr { top: -20px; right: -20px; }
+
+    /* ════════════════════════════════════════════
+       STATS STRIP
+    ════════════════════════════════════════════ */
+    .stats {
+      background: var(--g-800);
+      padding: 84px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .stats::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(58,102,48,0.20) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .stats-grid {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 60px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+    }
+    .stat-item {
+      text-align: center;
+      position: relative;
+    }
+    .stat-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 38%;
+      width: 1px;
+      background: rgba(255,255,255,0.07);
+    }
+    .stat-num {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(36px, 5vw, 62px);
+      font-weight: 800;
+      letter-spacing: -0.048em;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .stat-num sup {
+      font-size: 0.44em;
+      letter-spacing: -0.02em;
+      vertical-align: super;
+    }
+    .stat-lbl {
+      font-family: 'Inter', sans-serif;
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.46);
+    }
+
+    /* ════════════════════════════════════════════
+       SERVICES — DARK
+    ════════════════════════════════════════════ */
+    .services {
+      background: var(--coal);
+      padding: 116px 0;
+    }
+    .services-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 60px;
+    }
+    .sec-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 56px;
+    }
+    .sec-header h2 {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(28px, 3.8vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.038em;
+      line-height: 1.1;
+      color: #fff;
+    }
+    .ghost-link-light {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.40);
+      position: relative;
+      padding-bottom: 3px;
+      letter-spacing: -0.008em;
+      transition: color 0.22s ease;
+      white-space: nowrap;
+    }
+    .ghost-link-light::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 1px;
+      background: rgba(255,255,255,0.45);
+      transform-origin: left;
+      transform: scaleX(0.28);
+      transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ghost-link-light:hover { color: #fff; }
+    .ghost-link-light:hover::after { transform: scaleX(1); }
+
+    .ghost-link-dark {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(0,0,0,0.35);
+      position: relative;
+      padding-bottom: 3px;
+      letter-spacing: -0.008em;
+      transition: color 0.22s ease;
+      white-space: nowrap;
+    }
+    .ghost-link-dark::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 1px;
+      background: rgba(0,0,0,0.45);
+      transform-origin: left;
+      transform: scaleX(0.28);
+      transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ghost-link-dark:hover { color: var(--dark); }
+    .ghost-link-dark:hover::after { transform: scaleX(1); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .svc-card {
+      background: #1E1E1C;
+      overflow: hidden;
+      border-radius: 8px;
+      cursor: pointer;
+      border-top: 2px solid transparent;
+      will-change: transform;
+      transition-property: opacity, transform, box-shadow, border-color;
+      transition-duration: 720ms;
+      transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .svc-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 52px rgba(0,0,0,0.34), 0 6px 18px rgba(0,0,0,0.20);
+      border-top-color: var(--g-600);
+    }
+    .svc-thumb {
+      aspect-ratio: 16/9;
+      overflow: hidden;
+    }
+    .svc-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.94) contrast(1.06) saturate(0.88);
+      transition: transform 0.92s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .svc-card:hover .svc-thumb img { transform: scale(1.06); }
+    .svc-body { padding: 22px 24px 30px; }
+    .svc-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--g-500);
+      margin-bottom: 9px;
+    }
+    .svc-body h3 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 16.5px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.28;
+      letter-spacing: -0.024em;
+      margin-bottom: 9px;
+    }
+    .svc-body p {
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.38);
+      line-height: 1.68;
+    }
+    .svc-card { display: block; }
+    .svc-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: rgba(255,255,255,0.28);
+      transition: color 0.22s ease, gap 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .svc-card:hover .svc-more { color: var(--g-500); gap: 9px; }
+    .nav-links a.active {
+      color: var(--g-700);
+      background: rgba(45, 90, 42, 0.07);
+    }
+
+    /* ════════════════════════════════════════════
+       PATIENT REVIEWS
+    ════════════════════════════════════════════ */
+    .reviews {
+      background: var(--off-white);
+      padding: 116px 0;
+    }
+    .reviews-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 60px;
+    }
+    .reviews-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+      margin-bottom: 56px;
+    }
+    .reviews-h2 {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(28px, 3.8vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.038em;
+      color: var(--dark);
+      line-height: 1.1;
+    }
+    .reviews-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--smoke);
+      line-height: 1.6;
+    }
+    /* Carousel container — bleeds past reviews-inner's 60px padding */
+    .reviews-carousel-wrap {
+      margin: 0 -60px;
+      position: relative;
+    }
+    /* Right-edge fade only — hints at more cards to the right */
+    .reviews-carousel-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 80px;
+      z-index: 2;
+      pointer-events: none;
+      background: linear-gradient(to left, var(--off-white) 10%, transparent);
+    }
+    .reviews-track {
+      display: flex;
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      gap: 28px;
+      padding: 14px calc((100% - 370px) / 2) 40px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .reviews-track::-webkit-scrollbar { display: none; }
+    /* WebKit right-edge scroll space — flex child acts as padding */
+    .reviews-track::after {
+      content: '';
+      flex: 0 0 calc((100% - 370px) / 2 - 28px);
+    }
+    .reviews-track.is-dragging {
+      cursor: grabbing;
+    }
+    /* Card stagger — starts hidden, reveals via parent .in class */
+    .review-card {
+      flex: 0 0 370px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 10px;
+      padding: 30px 28px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 2px 10px rgba(0,0,0,0.06);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+                  transform 0.75s cubic-bezier(0.22,1,0.36,1),
+                  box-shadow 0.55s cubic-bezier(0.16,1,0.3,1),
+                  border-color 0.3s ease;
+    }
+    .reviews-carousel-wrap.in .review-card           { opacity: 1; transform: translateY(0); }
+    .reviews-carousel-wrap.in .review-card:nth-child(1) { transition-delay: 0.04s; }
+    .reviews-carousel-wrap.in .review-card:nth-child(2) { transition-delay: 0.14s; }
+    .reviews-carousel-wrap.in .review-card:nth-child(3) { transition-delay: 0.26s; }
+    .reviews-carousel-wrap.in .review-card:nth-child(4) { transition-delay: 0.40s; }
+    .reviews-carousel-wrap.in .review-card:nth-child(5) { transition-delay: 0.56s; }
+    .reviews-carousel-wrap.in .review-card:nth-child(6) { transition-delay: 0.74s; }
+    .review-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05), 0 10px 36px rgba(0,0,0,0.10), 0 24px 52px rgba(0,0,0,0.06);
+      border-color: rgba(45,90,42,0.16);
+    }
+    .reviews-track.is-dragging .review-card { pointer-events: none; transition: none; }
+    .review-stars {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+    .review-stars svg {
+      width: 20px; height: 20px;
+      fill: #C08B28;
+    }
+    .review-quote {
+      font-family: 'Inter', sans-serif;
+      font-size: 14.5px;
+      line-height: 1.80;
+      color: #3d4239;
+      flex: 1;
+      margin-bottom: 22px;
+    }
+    .review-divider {
+      width: 100%;
+      height: 1px;
+      background: rgba(0,0,0,0.07);
+      margin-bottom: 18px;
+    }
+    .review-footer {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+    .review-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--g-50);
+      border: 1px solid rgba(45,90,42,0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: 'Manrope', sans-serif;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--g-700);
+    }
+    .review-meta {
+      display: flex;
+      flex-direction: column;
+    }
+    .review-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--dark);
+      letter-spacing: -0.01em;
+    }
+    .reviews-note {
+      margin-top: 32px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--silver);
+      text-align: center;
+      letter-spacing: 0.01em;
+    }
+
+    /* ════════════════════════════════════════════
+       CTA BANNER
+    ════════════════════════════════════════════ */
+    .cta-section {
+      background: var(--g-800);
+      padding: 108px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 82% 50%, rgba(74,122,60,0.22) 0%, transparent 55%),
+        radial-gradient(ellipse at 12% 50%, rgba(8,16,10,0.50) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .cta-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 60px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+    .cta-h2 {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(40px, 6.5vw, 82px);
+      font-weight: 800;
+      letter-spacing: -0.045em;
+      line-height: 0.96;
+      color: #fff;
+      flex: 1 1 320px;
+    }
+    .cta-right {
+      flex: 0 1 340px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      align-items: flex-start;
+    }
+    .cta-right p {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: rgba(255,255,255,0.62);
+      line-height: 1.72;
+    }
+
+    /* ════════════════════════════════════════════
+       STANDORT
+    ════════════════════════════════════════════ */
+    .standort {
+      padding: 108px 0;
+      background: var(--off-white);
+    }
+    .standort-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 60px;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .standort-photo {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .standort-photo img {
+      width: 100%;
+      height: 460px;
+      object-fit: cover;
+      object-position: center center;
+      display: block;
+      transition: transform 0.95s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .standort-photo:hover img { transform: scale(1.03); }
+    .standort-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .standort-body .label {
+      margin-bottom: 12px;
+    }
+    .standort-address {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--smoke);
+      line-height: 1.75;
+      padding: 22px 0 18px;
+      margin: 22px 0 0;
+      border-top: 1px solid var(--mist);
+    }
+    .standort-address strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--silver);
+      margin-bottom: 6px;
+    }
+    .standort-addr-line {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--smoke);
+      line-height: 1.75;
+    }
+
+    /* ── Weekly hours table ─────────────────── */
+    .standort-hours {
+      padding: 20px 0;
+      margin: 0 0 20px;
+      border-top: 1px solid var(--mist);
+      border-bottom: 1px solid var(--mist);
+    }
+    .hours-heading {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--silver);
+      margin-bottom: 14px;
+    }
+    .hours-table {
+      display: flex;
+      flex-direction: column;
+    }
+    .hours-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--mist);
+      position: relative;
+    }
+    .hours-row:first-child { border-top: 1px solid var(--mist); }
+    .hours-day,
+    .hours-time {
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--smoke);
+      line-height: 1;
+    }
+    .hours-day { display: flex; align-items: center; gap: 0; }
+    .hours-time { text-align: right; }
+    .hours-time.is-closed { color: rgba(185, 58, 58, 0.42); }
+
+    /* Today row */
+    .hours-row.is-today {
+      padding-left: 10px;
+      padding-right: 10px;
+      margin-left: -10px;
+      margin-right: -10px;
+      background: var(--g-50);
+      border-top: 1px solid transparent;
+      border-bottom: 1px solid transparent;
+      border-radius: 5px;
+    }
+    .hours-row.is-today .hours-day { color: var(--g-700); font-weight: 600; }
+    .hours-row.is-today .hours-time { color: var(--g-600); font-weight: 500; }
+    .hours-row.is-today .hours-time.is-closed { color: rgba(185, 58, 58, 0.58); font-weight: 400; }
+    .hours-today-pill {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: rgba(45, 90, 42, 0.09);
+      color: var(--g-700);
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+    .standort-note {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--silver);
+      margin-top: 12px;
+      line-height: 1.55;
+    }
+
+    /* ════════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════════ */
+    footer {
+      background: var(--coal);
+      padding: 96px 0 58px;
+    }
+    .footer-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 60px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2.1fr 1fr 1fr 1fr 1fr;
+      gap: 50px;
+      padding-bottom: 64px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .footer-logo {
+      margin-bottom: 18px;
+    }
+    .footer-logo img {
+      width: 116px;
+      height: auto;
+      object-fit: contain;
+      filter: brightness(0) invert(1) opacity(0.72);
+      display: block;
+    }
+    .footer-brand p {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.76;
+      max-width: 240px;
+      margin-bottom: 0;
+    }
+    .footer-socials { display: flex; gap: 14px; }
+    .footer-socials a {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.32);
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      padding-bottom: 1px;
+      transition: color 0.18s, border-color 0.18s;
+    }
+    .footer-socials a:hover { color: #fff; border-color: rgba(255,255,255,0.42); }
+
+    .footer-col h4 {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.20);
+      margin-bottom: 22px;
+    }
+    .footer-col ul li + li { margin-top: 14px; }
+    .footer-col ul a {
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.44);
+      transition: color 0.22s ease;
+    }
+    .footer-col ul a:hover { color: rgba(255,255,255,0.88); }
+
+    .footer-bottom {
+      padding-top: 34px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-bottom p {
+      font-family: 'Inter', sans-serif;
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.20);
+    }
+    .footer-legal { display: flex; gap: 20px; }
+    .footer-legal a {
+      font-family: 'Inter', sans-serif;
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.20);
+      transition: color 0.15s;
+    }
+    .footer-legal a:hover { color: rgba(255,255,255,0.50); }
+    .footer-afa {
+      display: inline-flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 14px;
+      cursor: default;
+      transition: opacity 0.25s ease;
+      opacity: 0.78;
+    }
+    .footer-afa:hover { opacity: 1; }
+    .footer-afa span {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .footer-afa img {
+      height: 36px;
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    /* ════════════════════════════════════════════
+       TYPOGRAPHY OVERRIDES — premium rhythm
+    ════════════════════════════════════════════ */
+    .feature-body { max-width: 520px; line-height: 1.88; }
+    .feature-h2   { margin: 8px 0 26px; }
+    .feature-list { gap: 13px; margin-bottom: 36px; }
+    .hero-sub     { max-width: 450px; line-height: 1.82; }
+    .svc-body p   { line-height: 1.74; }
+    .art-card p   { line-height: 1.80; }
+    .intro-right p{ line-height: 1.86; }
+
+    /* ════════════════════════════════════════════
+       IMAGE FILTERS — extend to all images
+    ════════════════════════════════════════════ */
+    .photo-tile img    { filter: brightness(0.96) contrast(1.04) saturate(0.88); }
+    .standort-photo img{ filter: brightness(0.95) contrast(1.05) saturate(0.86); }
+
+    /* ════════════════════════════════════════════
+       TRUST PILLARS
+    ════════════════════════════════════════════ */
+    .trust {
+      background: var(--off-white);
+      padding: 100px 0;
+      border-top: 1px solid var(--mist);
+      border-bottom: 1px solid var(--mist);
+    }
+    .trust-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 60px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 56px;
+    }
+    .trust-num {
+      font-family: 'Manrope', sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--g-600);
+      margin-bottom: 18px;
+    }
+    .trust-num::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1.5px;
+      background: var(--g-600);
+      margin-bottom: 13px;
+      opacity: 0.7;
+    }
+    .trust-item h3 {
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.022em;
+      color: var(--dark);
+      line-height: 1.30;
+      margin-bottom: 12px;
+    }
+    .trust-item p {
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      line-height: 1.80;
+      color: var(--smoke);
+    }
+
+    /* ════════════════════════════════════════════
+       IMAGE FADE-IN (applied via JS)
+    ════════════════════════════════════════════ */
+    .img-fade { opacity: 0; transition: opacity 0.70s ease; }
+    .img-fade.loaded { opacity: 1; }
+
+    /* ════════════════════════════════════════════
+       HAMBURGER BUTTON
+    ════════════════════════════════════════════ */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5.5px;
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-radius: var(--r-full);
+      padding: 0;
+      margin-left: 10px;
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.18s ease;
+    }
+    .nav-hamburger:hover  { background: rgba(0,0,0,0.055); }
+    .nav-hamburger:focus-visible { outline: 2px solid var(--g-700); outline-offset: 2px; }
+    .btn:focus-visible, .nav-cta:focus-visible, .ov-cta:focus-visible { outline: 2px solid var(--g-500); outline-offset: 3px; }
+    .nav-links a:focus-visible, .ov-link:focus-visible { outline: 2px solid var(--g-500); outline-offset: 3px; border-radius: var(--r-full); }
+    .svc-card:focus-visible, .art-card:focus-visible { outline: 2px solid var(--g-500); outline-offset: 2px; }
+
+    .ham-line {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--ink);
+      border-radius: 2px;
+      transform-origin: center;
+      transition:
+        transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity   0.22s ease;
+    }
+    .nav-hamburger.open .ham-line:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open .ham-line:nth-child(2) { opacity: 0; transform: scaleX(0.3); }
+    .nav-hamburger.open .ham-line:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ════════════════════════════════════════════
+       MOBILE FULLSCREEN OVERLAY
+    ════════════════════════════════════════════ */
+    .nav-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 850;
+      background: rgba(247, 247, 243, 0.97);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 72px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .nav-overlay.open { opacity: 1; pointer-events: all; }
+
+    .nav-overlay-links {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 52px;
+    }
+
+    .ov-link {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(26px, 7vw, 40px);
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      padding: 10px 28px;
+      border-radius: 12px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(18px);
+      transition:
+        opacity   0.42s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+        color     0.18s ease;
+      transition-delay: 0s;
+    }
+    .nav-overlay.open .ov-link               { opacity: 1; transform: none; }
+    .nav-overlay.open .ov-link:nth-child(1)  { transition-delay: 0.04s; }
+    .nav-overlay.open .ov-link:nth-child(2)  { transition-delay: 0.09s; }
+    .nav-overlay.open .ov-link:nth-child(3)  { transition-delay: 0.14s; }
+    .nav-overlay.open .ov-link:nth-child(4)  { transition-delay: 0.19s; }
+    .nav-overlay.open .ov-link:nth-child(5)  { transition-delay: 0.24s; }
+    .nav-overlay.open .ov-link:nth-child(6)  { transition-delay: 0.29s; }
+    .ov-link:hover  { color: var(--g-700); }
+    .ov-link:active { transform: scale(0.97); }
+
+    .ov-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: var(--g-700);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      border-radius: var(--r-full);
+      opacity: 0;
+      transform: translateY(14px);
+      transition:
+        opacity    0.42s cubic-bezier(0.16, 1, 0.3, 1),
+        transform  0.42s cubic-bezier(0.16, 1, 0.3, 1),
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+      transition-delay: 0s;
+    }
+    .nav-overlay.open .ov-cta { opacity: 1; transform: none; transition-delay: 0.34s; }
+    .ov-cta:hover {
+      background: var(--g-600);
+      box-shadow: 0 5px 24px rgba(45,90,42,0.28);
+    }
+
+    /* Hide overlay on desktop */
+    @media (min-width: 901px) { .nav-overlay { display: none !important; } }
+
+    /* ════════════════════════════════════════════
+       MOBILE — 900px (hide nav links)
+    ════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .nav-cta   { margin-left: auto; }
+      .nav-hamburger { display: flex; }
+    }
+
+    /* ════════════════════════════════════════════
+       MOBILE — 768px (single-column layout)
+    ════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .nav-shell { top: 12px; width: calc(100% - 32px); }
+
+      /* Hero — lighter overlay + tighter bottom padding */
+      .hero-overlay {
+        background:
+          linear-gradient(110deg,rgba(6,8,7,.80) 0%,rgba(8,11,9,.60) 38%,rgba(8,11,9,.20) 64%,rgba(8,11,9,.04) 100%),
+          linear-gradient(to top,rgba(5,8,6,.62) 0%,transparent 52%);
+      }
+      .hero-content { padding: 0 16px 56px; }
+
+      /* Hero headline — reduced size + looser line-height on narrow screens */
+      .hero-h1 {
+        font-size: clamp(34px, 9.2vw, 46px);
+        line-height: 1.02;
+        letter-spacing: -0.030em;
+      }
+
+      /* Hero subtitle — slightly tighter on mobile */
+      .hero-sub { font-size: 14px; line-height: 1.70; margin-top: 18px; }
+
+      /* Hero CTA — stack vertically, full-width, centred text */
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 11px;
+        margin-top: 28px;
+      }
+      .hero-actions .btn { justify-content: center; }
+
+      /* Opening status — clear gap below buttons */
+      .clinic-status { margin-top: 18px; }
+
+      /* Sections — 16px side padding gives 343px content on 375px phone */
+      .intro { padding: 48px 0 40px; }
+      .intro-inner { padding: 0 16px; flex-direction: column; align-items: stretch; gap: 24px; }
+
+      /* WOW section — hidden on mobile */
+      .story-scroll { display: none; }
+
+      .feature { padding: 56px 0; }
+      .feature-inner { padding: 0 16px; grid-template-columns: 1fr; gap: 28px; }
+      .feature-img img { height: 260px; }
+      .feature-body { max-width: 100%; font-size: 14.5px; line-height: 1.84; }
+      .feature-inner > [style*="order:0"] { order: -1 !important; }
+
+      .stats { padding: 48px 0; }
+      .stats-grid { padding: 0 16px; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+
+      .trust { padding: 56px 0; }
+      .trust-inner { padding: 0 16px; grid-template-columns: 1fr 1fr; gap: 32px 20px; }
+
+      .services { padding: 56px 0; }
+      .services-inner { padding: 0 16px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .sec-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+
+      .reviews { padding: 56px 0; }
+      .reviews-inner { padding: 0 16px; }
+      .reviews-header { margin-bottom: 28px; }
+      .reviews-carousel-wrap { margin: 0 -16px; }
+      .reviews-carousel-wrap::after { width: 40px; }
+      .reviews-track { padding: 10px calc((100% - clamp(280px, 82vw, 340px)) / 2) 24px; gap: 18px; }
+      .reviews-track::after { flex: 0 0 calc((100% - clamp(280px, 82vw, 340px)) / 2 - 18px); }
+      .review-card { flex: 0 0 clamp(280px, 82vw, 340px); padding: 24px 20px; }
+
+      .cta-section { padding: 44px 0; }
+      .cta-inner { padding: 0 16px; flex-direction: column; align-items: stretch; gap: 20px; }
+
+      .standort { padding: 56px 0; }
+      .standort-inner { padding: 0 16px; grid-template-columns: 1fr; gap: 28px; }
+      .standort-photo img { height: 240px; }
+
+      /* ── Fix: flex children fill full width in column mode ── */
+      .intro-h2    { flex: 0 0 auto; width: 100%; max-width: 100%; }
+      .intro-right { flex: 0 0 auto; width: 100%; max-width: 100%; }
+      .cta-h2      { flex: 0 0 auto; width: 100%; max-width: 100%; }
+      .cta-right   { flex: 0 0 auto; width: 100%; max-width: 100%; align-items: stretch; }
+      .cta-right p { max-width: 100%; font-size: 14.5px; }
+      .cta-right .btn { align-self: flex-start; }
+
+      /* ── Mobile heading typography ──────────────────────────
+         Desktop clamps floor at 40px with line-height ~0.97,
+         which is intentionally tight at editorial scale.
+         On mobile (375–480px) that becomes cramped — override
+         to a smaller size with breathing room.
+      ── */
+      .intro-h2 {
+        font-size: clamp(27px, 7.4vw, 34px);
+        line-height: 1.08;
+        letter-spacing: -0.024em;
+        font-weight: 700;
+        width: 100%;
+        max-width: 100%;
+      }
+      .cta-h2 {
+        font-size: clamp(24px, 6.4vw, 30px);
+        line-height: 1.08;
+        letter-spacing: -0.024em;
+        font-weight: 700;
+        width: 100%;
+        max-width: 100%;
+      }
+      .feature-h2 {
+        font-size: clamp(22px, 5.8vw, 28px);
+        line-height: 1.14;
+      }
+      .sec-header h2 {
+        font-size: clamp(22px, 5.8vw, 28px) !important;
+        line-height: 1.14 !important;
+      }
+
+      /* Footer — compact mobile layout */
+      footer { padding: 28px 0 20px; }
+      .footer-inner { padding: 0 20px; }
+      .footer-top {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 20px;
+        row-gap: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+      .footer-brand {
+        grid-column: 1 / -1;
+        padding-bottom: 14px;
+        margin-bottom: 4px;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+      }
+      .footer-logo { margin-bottom: 10px; }
+      .footer-logo img { width: 88px; }
+      .footer-brand p { font-size: 12px; line-height: 1.58; margin-bottom: 10px; max-width: 100%; }
+      .footer-socials { gap: 12px; }
+      .footer-col { padding: 8px 0; border-bottom: none; border-right: none; }
+      .footer-col h4 { margin-bottom: 8px; }
+      .footer-col ul a { font-size: 12.5px; line-height: 1.48; }
+      .footer-col ul li + li { margin-top: 5px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 5px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.07); }
+      .footer-legal { flex-wrap: wrap; gap: 5px 12px; }
+    }
+
+    @media (max-width: 480px) {
+      .trust-inner  { grid-template-columns: 1fr; gap: 32px; }
+      .story-dots { right: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ NAVBAR ═══════════ -->
+<div class="nav-shell" id="navShell">
+  <div class="nav-pill">
+
+    <a href="#" class="nav-logo">
+      <img src="brand_assets/cpk-logo.png" alt="CPK Hagen — Chirurgische Praxisklinik" />
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#leistungen">Leistungen</a></li>
+      <li><a href="unfallchirurgie.html">Unfallchirurgie</a></li>
+      <li><a href="orthopadie.html">Orthopädie</a></li>
+      <li><a href="ambulante-op.html">Ambulante OP</a></li>
+      <li><a href="#praxis">Praxis</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
+    </ul>
+
+    <a href="#" class="nav-cta">
+      Termin buchen
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+
+    <button class="nav-hamburger" id="navHamburger" aria-label="Menü öffnen" aria-expanded="false">
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+    </button>
+
+  </div>
+</div>
+
+<!-- Mobile overlay menu -->
+<div class="nav-overlay" id="navOverlay" aria-hidden="true">
+  <nav class="nav-overlay-links">
+    <a href="#leistungen" class="ov-link">Leistungen</a>
+    <a href="unfallchirurgie.html" class="ov-link">Unfallchirurgie</a>
+    <a href="orthopadie.html" class="ov-link">Orthopädie</a>
+    <a href="ambulante-op.html" class="ov-link">Ambulante OP</a>
+    <a href="#praxis" class="ov-link">Praxis</a>
+    <a href="#kontakt" class="ov-link">Kontakt</a>
+  </nav>
+  <a href="#kontakt" class="ov-cta">
+    Termin buchen
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+</div>
+
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <div class="hero-bg">
+    <img id="heroBgImg"
+         src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1920&q=85"
+         onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1551190822-a9333d879b1f?auto=format&fit=crop&w=1920&q=85'"
+         alt="Chirurgische Praxisklinik Hagen" />
+    <div class="hero-overlay"></div>
+    <div class="hero-grain"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-line"></div>
+      <span>Chirurgische Praxisklinik Hagen</span>
+    </div>
+
+    <h1 class="hero-h1">
+      <span class="hero-line"><span class="hero-line-inner">Chirurgische</span></span>
+      <span class="hero-line"><span class="hero-line-inner hero-accent">Exzellenz —</span></span>
+      <span class="hero-line"><span class="hero-line-inner">in Hagen.</span></span>
+    </h1>
+
+    <p class="hero-sub">
+      Spezialisierte Unfallchirurgie und Orthopädie. Modernste Diagnostik, minimal-invasive Techniken und individuelle Betreuung auf dem höchsten Niveau privatärztlicher Versorgung.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#" class="btn btn-green">
+        Termin vereinbaren
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#praxis" class="btn btn-ghost-white">
+        Öffnungszeiten
+      </a>
+    </div>
+
+    <div class="clinic-status" id="clinicStatus" aria-live="polite" aria-label="Öffnungszeiten"></div>
+  </div>
+
+  <div class="hero-bar"></div>
+
+  <div class="hero-scroll">
+    <div class="scroll-bar"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+
+<!-- ═══════════ STORY SCROLL ═══════════ -->
+<section class="story-scroll" id="storyScroll" aria-label="Moderne Chirurgie neu definiert">
+  <div class="story-sticky">
+
+    <!-- Left: sticky cinematic image -->
+    <div class="story-img-wrap">
+      <img class="story-img"
+           src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?auto=format&fit=crop&w=1600&q=85"
+           onerror="this.onerror=null;this.src='https://picsum.photos/id/240/1600/1200'"
+           alt="Chirurgische Praxisklinik Hagen – Operationssaal" />
+      <div class="story-img-overlay"></div>
+    </div>
+
+    <!-- Right: story panels -->
+    <div class="story-panels-wrap">
+
+      <div class="story-panel" data-step="0">
+        <div class="story-label">Moderne Chirurgie</div>
+        <h2 class="story-h2">Präzision</h2>
+        <p class="story-body">Modernste Verfahren für sichere und schonende Eingriffe.</p>
+      </div>
+
+      <div class="story-panel" data-step="1">
+        <div class="story-label">Unsere Philosophie</div>
+        <h2 class="story-h2">Vertrauen</h2>
+        <p class="story-body">Persönliche Betreuung auf höchstem medizinischem Niveau.</p>
+      </div>
+
+      <div class="story-panel" data-step="2">
+        <div class="story-label">Seit 1998</div>
+        <h2 class="story-h2">20+ Jahre<br>Erfahrung</h2>
+        <p class="story-body">Erfahrung, Präzision und moderne Technik vereint.</p>
+      </div>
+
+      <div class="story-panel" data-step="3">
+        <div class="story-label">Für Sie</div>
+        <h2 class="story-h2">Für Ihre<br>Gesundheit</h2>
+        <p class="story-body">Ambulante Chirurgie mit Fokus auf schnelle Genesung.</p>
+        <div class="story-cta-wrap">
+          <a href="#kontakt" class="btn btn-green">
+            Termin vereinbaren
+            <svg class="ico" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 11L11 2M11 2H5M11 2v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Progress dots -->
+      <div class="story-dots" aria-hidden="true">
+        <div class="story-dot" data-dot="0"></div>
+        <div class="story-dot" data-dot="1"></div>
+        <div class="story-dot" data-dot="2"></div>
+        <div class="story-dot" data-dot="3"></div>
+      </div>
+
+    </div><!-- end .story-panels-wrap -->
+
+  </div><!-- end .story-sticky -->
+</section>
+
+
+<!-- ═══════════ INTRO ═══════════ -->
+<section class="intro">
+  <div class="intro-inner">
+    <h2 class="intro-h2 r-up">
+      Ihre Gesundheit.<br>Unsere Expertise.
+    </h2>
+    <div class="intro-right r-up d2">
+      <p>Die Chirurgische Praxisklinik Hagen verbindet die Kompetenz eines erfahrenen Spezialistenteams mit der Atmosphäre und dem Komfort einer modernen Privatklinik. Ambulante und operative Versorgung auf dem neuesten Stand der Medizin — persönlich, präzise, verlässlich.</p>
+      <a href="#praxis" class="btn btn-outline-green">
+        Über die Praxis
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════ FEATURE 1 — UNFALLCHIRURGIE ═══════════ -->
+<section class="feature" style="background: var(--off-white);">
+  <div class="feature-inner">
+
+    <div class="r-left">
+      <div class="label">Schwerpunkt</div>
+      <h2 class="feature-h2">Unfallchirurgie auf höchstem Niveau</h2>
+      <p class="feature-body">Von der präzisen Erstversorgung bis zur vollständigen Rehabilitation — unser unfallchirurgisches Team begleitet Sie durch jeden Schritt Ihrer Genesung. Modernste minimal-invasive Techniken garantieren optimale Ergebnisse bei kürzester Erholungszeit.</p>
+      <ul class="feature-list">
+        <li>Operative Versorgung von Frakturen und Verletzungen</li>
+        <li>Arthroskopische Eingriffe an Knie, Hand und Sprunggelenk</li>
+        <li>Sehnennähte, Bandrekonstruktionen und Metallentfernungen</li>
+        <li>Ambulante Notfallversorgung und lückenlose Nachsorge</li>
+      </ul>
+      <a href="unfallchirurgie.html" class="btn btn-outline-dark">
+        Zur Unfallchirurgie
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div class="feature-img r-right">
+      <img src="https://images.unsplash.com/photo-1685997180450-242a65624238?auto=format&fit=crop&w=720&q=80"
+           onerror="this.onerror=null;this.src='https://picsum.photos/id/169/720/520'"
+           alt="Unfallchirurgie — CPK Hagen" />
+      <div class="feature-accent acc-bl"></div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════ STATS ═══════════ -->
+<div class="stats">
+  <div class="stats-grid">
+    <div class="stat-item r-up">
+      <div class="stat-num">3.000<sup>+</sup></div>
+      <div class="stat-lbl">Operationen pro Jahr</div>
+    </div>
+    <div class="stat-item r-up d1">
+      <div class="stat-num">20<sup>+</sup></div>
+      <div class="stat-lbl">Jahre Erfahrung</div>
+    </div>
+    <div class="stat-item r-up d2">
+      <div class="stat-num">98<sup>%</sup></div>
+      <div class="stat-lbl">Patientenzufriedenheit</div>
+    </div>
+    <div class="stat-item r-up d3">
+      <div class="stat-num">12</div>
+      <div class="stat-lbl">Fachärzte im Team</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════ TRUST PILLARS ═══════════ -->
+<section class="trust">
+  <div class="trust-inner">
+
+    <div class="trust-item r-up d1">
+      <div class="trust-num">01</div>
+      <h3>Erfahrenes Ärzteteam</h3>
+      <p>Unsere Fachärzte für Chirurgie und Orthopädie bringen jahrzehntelange operative Erfahrung aus führenden deutschen Kliniken mit.</p>
+    </div>
+
+    <div class="trust-item r-up d2">
+      <div class="trust-num">02</div>
+      <h3>Modernste Ausstattung</h3>
+      <p>Hochmoderne OP-Säle, präzise Diagnostikgeräte und ein vollausgestattetes ambulantes Operationszentrum nach aktuellen Standards.</p>
+    </div>
+
+    <div class="trust-item r-up d3">
+      <div class="trust-num">03</div>
+      <h3>Zertifizierte Qualität</h3>
+      <p>Regelmäßige Zertifizierungen und externe Audits sichern die gleichbleibend hohe Qualität unserer Eingriffe und klinischen Abläufe.</p>
+    </div>
+
+    <div class="trust-item r-up d4">
+      <div class="trust-num">04</div>
+      <h3>Persönliche Betreuung</h3>
+      <p>Von der ersten Beratung bis zur Nachsorge — kurze Wartezeiten, transparente Kommunikation und Behandlung auf Augenhöhe.</p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════ FEATURE 2 — ORTHOPÄDIE ═══════════ -->
+<section class="feature" style="background: var(--g-50);">
+  <div class="feature-inner">
+
+    <div class="feature-img r-left" style="order:0;">
+      <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=720&q=80"
+           alt="Orthopädie & Gelenkchirurgie" />
+      <div class="feature-accent acc-tr"></div>
+    </div>
+
+    <div style="order:1;" class="r-right">
+      <div class="label">Fachbereich</div>
+      <h2 class="feature-h2">Orthopädie &amp; Gelenkchirurgie</h2>
+      <p class="feature-body">Präzise Behandlung orthopädischer Erkrankungen — von der Gelenkspiegelung bis zur ambulanten Korrekturoperation. Unser Team verbindet chirurgische Erfahrung mit modernsten minimal-invasiven Verfahren für schnellste Genesung.</p>
+      <ul class="feature-list">
+        <li>Arthroskopie an Knie, Hand und Sprunggelenk</li>
+        <li>Hallux-valgus- und Hammerzehen-Korrekturen</li>
+        <li>Karpaltunnel- und Tennisarm-Operationen</li>
+        <li>Behandlung chronischer Gelenk- und Sehnenbeschwerden</li>
+      </ul>
+      <a href="orthopadie.html" class="btn btn-outline-dark">
+        Zur Orthopädie
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════ SERVICES — DARK ═══════════ -->
+<section class="services" id="leistungen">
+  <div class="services-inner">
+
+    <div class="sec-header r-up">
+      <h2>Unsere Leistungen</h2>
+      <a href="#" class="ghost-link-light">Alle Leistungen →</a>
+    </div>
+
+    <div class="services-grid">
+      <a href="hand-fusschirurgie.html" class="svc-card r-scale d1">
+        <div class="svc-thumb">
+          <img src="https://images.unsplash.com/photo-1551190822-a9333d879b1f?auto=format&fit=crop&w=560&q=80"
+               onerror="this.onerror=null;this.src='https://picsum.photos/id/169/560/420'"
+               alt="Hand- und Fußchirurgie" />
+        </div>
+        <div class="svc-body">
+          <div class="svc-tag">Hand- &amp; Fußchirurgie</div>
+          <h3>Hand- &amp; Fußchirurgie</h3>
+          <p>Karpaltunneloperationen, Sehnennähte, schnellende Finger, Hallux-valgus- und Hammerzehen-Korrekturen — ambulant und präzise.</p>
+          <span class="svc-more">Mehr erfahren →</span>
+        </div>
+      </a>
+
+      <a href="arthroskopie.html" class="svc-card r-scale d2">
+        <div class="svc-thumb">
+          <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=560&q=80"
+               onerror="this.onerror=null;this.src='https://picsum.photos/id/169/560/420'"
+               alt="Arthroskopie" />
+        </div>
+        <div class="svc-body">
+          <div class="svc-tag">Arthroskopie</div>
+          <h3>Arthroskopie &amp; Gelenkspiegelung</h3>
+          <p>Minimal-invasive Gelenkspiegelungen an Knie, Hand und Sprunggelenk — zur präzisen Diagnostik und direkten operativen Versorgung.</p>
+          <span class="svc-more">Mehr erfahren →</span>
+        </div>
+      </a>
+
+      <a href="ambulante-op.html" class="svc-card r-scale d3">
+        <div class="svc-thumb">
+          <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?auto=format&fit=crop&w=560&q=80"
+               onerror="this.onerror=null;this.src='https://picsum.photos/id/188/560/420'"
+               alt="Hernienchirurgie" />
+        </div>
+        <div class="svc-body">
+          <div class="svc-tag">Hernienchirurgie</div>
+          <h3>Hernien- &amp; Allgemeinchirurgie</h3>
+          <p>Leisten-, Nabel- und Narbenbruchoperationen — mit und ohne Netz, ambulant, sicher und schonend.</p>
+          <span class="svc-more">Mehr erfahren →</span>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════ PATIENT REVIEWS ═══════════ -->
+<section class="reviews" id="bewertungen">
+  <div class="reviews-inner">
+
+    <div class="reviews-header r-up">
+      <div class="label">Patientenstimmen</div>
+      <h2 class="reviews-h2">Vertrauen unserer Patienten</h2>
+      <p class="reviews-sub">Echte Erfahrungen aus der Chirurgischen Praxisklinik Hagen.</p>
+    </div>
+
+    <div class="reviews-carousel-wrap r-up">
+    <div class="reviews-track" id="reviewsTrack">
+
+      <div class="review-card">
+        <div class="review-stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="review-quote">„Sind seit vielen Jahren da und sind immer zufrieden. Nettes Personal und Dr. Tacke hat mich immer gut behandelt. Ich und meine Frau waren immer zufrieden."</p>
+        <div class="review-divider"></div>
+        <div class="review-footer">
+          <div class="review-avatar">JS</div>
+          <div class="review-meta">
+            <span class="review-name">Jörg Skarda</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="review-quote">„Mir wurde in der Praxis sehr gut geholfen. Alle waren sehr nett. Die Wartezeit war mit 30 Minuten recht kurz und das obwohl der Wartebereich überfüllt war. Ich werde auf jeden Fall wieder hingehen."</p>
+        <div class="review-divider"></div>
+        <div class="review-footer">
+          <div class="review-avatar">T</div>
+          <div class="review-meta">
+            <span class="review-name">Tanja</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="review-quote">„Freundliche Mitarbeiter, Ärzte Weltklasse. Hier stimmt einfach alles. Vielen Dank."</p>
+        <div class="review-divider"></div>
+        <div class="review-footer">
+          <div class="review-avatar">RK</div>
+          <div class="review-meta">
+            <span class="review-name">Ralph Küster</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="review-quote">„Tolles und sympathisches Praxisteam, das immer den Überblick behält und sehr freundlich ist. Ein großes Dankeschön auch an Dr. Tacke für die OP an meinem Oberschenkel. Habe mich hier gut aufgehoben gefühlt."</p>
+        <div class="review-divider"></div>
+        <div class="review-footer">
+          <div class="review-avatar">AS</div>
+          <div class="review-meta">
+            <span class="review-name">Andreas S.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="review-quote">„Eine der besten Arztpraxen die ich je besucht habe. Ausstattung, Termintreue und Umgang sind vorbildlich."</p>
+        <div class="review-divider"></div>
+        <div class="review-footer">
+          <div class="review-avatar">PJ</div>
+          <div class="review-meta">
+            <span class="review-name">Peter Joachim Jokisch</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="review-quote">„Trotz Kassenpatient wird man wie ein Privatpatient behandelt. Super sympathisches Team und tolle Ärzte. Daumen hoch."</p>
+        <div class="review-divider"></div>
+        <div class="review-footer">
+          <div class="review-avatar">JU</div>
+          <div class="review-meta">
+            <span class="review-name">Julia Schulte</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end .reviews-track -->
+    </div><!-- end .reviews-carousel-wrap -->
+
+    <p class="reviews-note">Basierend auf öffentlichen Patientenbewertungen.</p>
+
+  </div>
+</section>
+
+
+<!-- ═══════════ CTA BANNER ═══════════ -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2 class="cta-h2 r-up">
+      Bereit für Ihren<br>nächsten Schritt?
+    </h2>
+    <div class="cta-right r-up d2">
+      <p>Vereinbaren Sie noch heute Ihren persönlichen Beratungstermin bei den Spezialisten der Chirurgischen Praxisklinik Hagen.</p>
+      <a href="#" class="btn btn-white">
+        Termin vereinbaren
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════ STANDORT ═══════════ -->
+<section class="standort" id="praxis">
+  <div class="standort-inner">
+
+    <div class="standort-photo r-left">
+      <img src="brand_assets/cpk-building.png" alt="CPK Hagen — Praxisgebäude" />
+    </div>
+
+    <div class="standort-body r-right">
+      <div class="label">Unser Standort</div>
+      <h2 class="feature-h2">Praxis in Hagen</h2>
+      <p class="feature-body">Zentral im Herzen Hagens gelegen, modern ausgestattet und barrierefrei zugänglich — für kurze Wege und eine persönliche Betreuung in angenehmer Atmosphäre.</p>
+      <div class="standort-address">
+        <strong>Adresse</strong>
+        <p class="standort-addr-line">Chirurgische Praxisklinik Hagen</p>
+        <p class="standort-addr-line">Elberfelder Straße 26 · 58095 Hagen</p>
+      </div>
+      <div class="standort-hours">
+        <span class="hours-heading">Öffnungszeiten</span>
+        <div class="hours-table" id="hoursTable">
+          <div class="hours-row" data-day="1">
+            <span class="hours-day">Montag</span>
+            <span class="hours-time">08:00 – 17:00 Uhr</span>
+          </div>
+          <div class="hours-row" data-day="2">
+            <span class="hours-day">Dienstag</span>
+            <span class="hours-time">08:00 – 17:00 Uhr</span>
+          </div>
+          <div class="hours-row" data-day="3">
+            <span class="hours-day">Mittwoch</span>
+            <span class="hours-time">08:00 – 17:00 Uhr</span>
+          </div>
+          <div class="hours-row" data-day="4">
+            <span class="hours-day">Donnerstag</span>
+            <span class="hours-time">08:00 – 17:00 Uhr</span>
+          </div>
+          <div class="hours-row" data-day="5">
+            <span class="hours-day">Freitag</span>
+            <span class="hours-time">08:00 – 17:00 Uhr</span>
+          </div>
+          <div class="hours-row" data-day="6">
+            <span class="hours-day">Samstag</span>
+            <span class="hours-time is-closed">Geschlossen</span>
+          </div>
+          <div class="hours-row" data-day="0">
+            <span class="hours-day">Sonntag</span>
+            <span class="hours-time is-closed">Geschlossen</span>
+          </div>
+        </div>
+        <p class="standort-note">Notfallversorgung nach Vereinbarung</p>
+      </div>
+      <a href="#" class="btn btn-outline-dark">
+        Anfahrt &amp; Kontakt
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer id="kontakt">
+  <div class="footer-inner">
+    <div class="footer-top">
+
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="brand_assets/cpk-logo.png" alt="CPK Hagen" />
+        </div>
+        <p>Chirurgische Praxisklinik Hagen — Ihr Spezialist für Unfallchirurgie, Orthopädie und ambulante Operationen im Herzen Hagens.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Leistungen</h4>
+        <ul>
+          <li><a href="unfallchirurgie.html">Unfallchirurgie</a></li>
+          <li><a href="orthopadie.html">Orthopädie</a></li>
+          <li><a href="arthroskopie.html">Arthroskopie</a></li>
+          <li><a href="hand-fusschirurgie.html">Hand- &amp; Fußchirurgie</a></li>
+          <li><a href="ambulante-op.html">Ambulante OP</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Praxis</h4>
+        <ul>
+          <li><a href="#praxis">Über uns</a></li>
+          <li><a href="#praxis">Ärzteteam</a></li>
+          <li><a href="#praxis">Ausstattung</a></li>
+          <li><a href="#praxis">Zertifikate</a></li>
+          <li><a href="#praxis">Karriere</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Patienten</h4>
+        <ul>
+          <li><a href="#kontakt">Terminbuchung</a></li>
+          <li><a href="#praxis">Sprechzeiten</a></li>
+          <li><a href="#kontakt">Notaufnahme</a></li>
+          <li><a href="#kontakt">Patienteninfos</a></li>
+          <li><a href="#kontakt">Online-Check-in</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a href="#leistungen">Aktuelles</a></li>
+          <li><a href="#kontakt">Stellenangebote</a></li>
+          <li><a href="#kontakt">Presse</a></li>
+          <li><a href="#kontakt">Kontakt</a></li>
+          <li><a href="#praxis">Anfahrt</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Chirurgische Praxisklinik Hagen. Alle Rechte vorbehalten.</p>
+      <div class="footer-afa">
+        <span>Crafted by</span>
+        <img src="brand_assets/afa-logo.png" alt="AFA" />
+      </div>
+      <div class="footer-legal">
+        <a href="#">Datenschutz</a>
+        <a href="#">Impressum</a>
+        <a href="#">Barrierefreiheit</a>
+        <a href="#">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+  // Always start at the top on page load/reload.
+  // Prevents the browser from restoring scroll into the middle of the WOW section.
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (!window.location.hash) window.scrollTo(0, 0);
+
+  // ── Scroll Reveal (bidirectional) ─────────────────────────────
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      entry.target.classList.toggle('in', entry.isIntersecting);
+    });
+  }, { threshold: 0.08, rootMargin: '-8% 0px -12% 0px' });
+
+  document.querySelectorAll('.r-up, .r-left, .r-right, .r-scale').forEach(el => {
+    revealObs.observe(el);
+  });
+
+  // ── Navbar scrolled state + hide/reveal on scroll ────────────
+  const navShell = document.getElementById('navShell');
+  let lastScroll = 0;
+  let stableScroll = 0; // position when direction last changed
+
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    navShell.classList.toggle('scrolled', y > 60);
+
+    // WOW is pinned — it manages the navbar, don't interfere
+    if (navShell.classList.contains('nav-wow')) { lastScroll = y; return; }
+
+    if (y <= 110) {
+      // Always visible near top
+      navShell.classList.remove('nav-hidden');
+      stableScroll = y;
+    } else if (y < lastScroll) {
+      // Any upward movement → reveal immediately, reset reference
+      navShell.classList.remove('nav-hidden');
+      stableScroll = y;
+    } else if (y - stableScroll > 80) {
+      // Sustained 80px+ downscroll since last direction change → hide
+      navShell.classList.add('nav-hidden');
+    }
+
+    lastScroll = y;
+  }, { passive: true });
+
+  // ── Active nav highlight for anchor sections ─────────────────
+  const navSections = [
+    { id: 'leistungen', link: document.querySelector('.nav-links a[href="#leistungen"]') },
+    { id: 'praxis',     link: document.querySelector('.nav-links a[href="#praxis"]') },
+    { id: 'kontakt',    link: document.querySelector('.nav-links a[href="#kontakt"]') },
+  ];
+
+  function setActiveNav(id) {
+    navSections.forEach(s => s.link && s.link.classList.toggle('active', s.id === id));
+  }
+
+  function getActiveSection() {
+    // Near bottom of page → kontakt wins regardless of offsetTop math
+    if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 80) {
+      return 'kontakt';
+    }
+    const trigger = window.scrollY + 160;
+    let current = null;
+    for (const s of navSections) {
+      const el = document.getElementById(s.id);
+      if (el && el.offsetTop <= trigger) current = s.id;
+    }
+    return current;
+  }
+
+  window.addEventListener('scroll', () => setActiveNav(getActiveSection()), { passive: true });
+
+  // Set active immediately on click — don't wait for scroll event
+  navSections.forEach(s => {
+    if (s.link) s.link.addEventListener('click', () => setActiveNav(s.id));
+  });
+
+  // Honour hash on initial load
+  if (location.hash) {
+    const hid = location.hash.slice(1);
+    if (navSections.some(s => s.id === hid)) setActiveNav(hid);
+  }
+
+  // ── Mobile hamburger menu ────────────────────────────────────
+  const navHamburger = document.getElementById('navHamburger');
+  const navOverlay   = document.getElementById('navOverlay');
+
+  function openMenu() {
+    navShell.classList.remove('nav-hidden');
+    navHamburger.classList.add('open');
+    navHamburger.setAttribute('aria-expanded', 'true');
+    navOverlay.classList.add('open');
+    navOverlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    navHamburger.classList.remove('open');
+    navHamburger.setAttribute('aria-expanded', 'false');
+    navOverlay.classList.remove('open');
+    navOverlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  navHamburger.addEventListener('click', () => {
+    navHamburger.classList.contains('open') ? closeMenu() : openMenu();
+  });
+
+  navOverlay.querySelectorAll('.ov-link, .ov-cta').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+  // ── Hero subtle parallax (translate only, no scale) ──────────
+  const heroBg = document.getElementById('heroBgImg');
+  let rafPending = false;
+
+  window.addEventListener('scroll', () => {
+    if (rafPending) return;
+    rafPending = true;
+    requestAnimationFrame(() => {
+      if (heroBg && window.scrollY < window.innerHeight * 1.2) {
+        const ty = Math.min(window.scrollY * 0.14, window.innerHeight * 0.10);
+        heroBg.style.transform = `scale(1.08) translateY(${ty}px)`;
+      }
+      rafPending = false;
+    });
+  }, { passive: true });
+
+  // ── Opening hours: highlight today's row ────────────────────
+  (function () {
+    var today = new Date().getDay();
+    document.querySelectorAll('#hoursTable .hours-row').forEach(function (row) {
+      if (parseInt(row.dataset.day, 10) === today) {
+        row.classList.add('is-today');
+        var dayEl = row.querySelector('.hours-day');
+        if (dayEl) {
+          var pill = document.createElement('span');
+          pill.className = 'hours-today-pill';
+          pill.textContent = 'Heute';
+          dayEl.appendChild(pill);
+        }
+      }
+    });
+  })();
+
+  // ── Reviews carousel — smooth JS snap ────────────────────────────
+  (function () {
+    var track = document.getElementById('reviewsTrack');
+    if (!track) return;
+
+    // scrollLeft value that centers each card in the viewport
+    function getSnapTargets() {
+      var half = track.clientWidth / 2;
+      var trackLeft = track.getBoundingClientRect().left;
+      return Array.from(track.querySelectorAll('.review-card')).map(function (card) {
+        var left = card.getBoundingClientRect().left - trackLeft + track.scrollLeft;
+        return left + card.offsetWidth / 2 - half;
+      });
+    }
+
+    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+    var rafId = 0;
+    function smoothScrollTo(target, duration) {
+      cancelAnimationFrame(rafId);
+      var from = track.scrollLeft;
+      var t0 = null;
+      rafId = requestAnimationFrame(function step(ts) {
+        if (!t0) t0 = ts;
+        var p = Math.min((ts - t0) / duration, 1);
+        track.scrollLeft = from + (target - from) * easeOutCubic(p);
+        if (p < 1) rafId = requestAnimationFrame(step);
+      });
+    }
+
+    // Snap to nearest card; if flickV large enough, advance one card in that direction
+    function doSnap(scroll, flickV) {
+      var targets = getSnapTargets();
+      var nearest = targets.reduce(function (best, t) {
+        return Math.abs(t - scroll) < Math.abs(best - scroll) ? t : best;
+      });
+      var target = nearest;
+      if (Math.abs(flickV) > 7) {
+        var idx = targets.findIndex(function (t) { return Math.abs(t - nearest) < 1; });
+        if (idx === -1) idx = 0;
+        var next = flickV > 0
+          ? Math.min(idx + 1, targets.length - 1)
+          : Math.max(idx - 1, 0);
+        target = targets[next];
+      }
+      var dist = Math.abs(target - scroll);
+      smoothScrollTo(target, Math.max(Math.min(dist * 0.55, 500), 180));
+    }
+
+    var isDown = false, startX = 0, startY = 0, startScroll = 0;
+    var lastX = 0, lastT = 0, vel = 0;
+    var hasDragged = false, isHoriz = null, momId = 0;
+
+    function begin(x, y) {
+      cancelAnimationFrame(momId);
+      cancelAnimationFrame(rafId);
+      isDown = true; hasDragged = false; isHoriz = null; vel = 0;
+      startX = x; startY = y; lastX = x; lastT = Date.now();
+      startScroll = track.scrollLeft;
+      track.classList.add('is-dragging');
+    }
+
+    function move(x, y, canPrevent) {
+      if (!isDown) return false;
+      var dx = x - startX, dy = y - startY;
+      if (isHoriz === null) {
+        if (Math.abs(dx) > Math.abs(dy) + 3) isHoriz = true;
+        else if (Math.abs(dy) > Math.abs(dx) + 3) { isHoriz = false; end(); return false; }
+        else return false;
+      }
+      if (!isHoriz) return false;
+      if (Math.abs(dx) > 4) hasDragged = true;
+      var now = Date.now(), dt = Math.max(now - lastT, 1);
+      var inst = (x - lastX) / dt;
+      vel = vel * 0.6 + inst * 0.4;
+      lastX = x; lastT = now;
+      track.scrollLeft = startScroll - dx;
+      return true;
+    }
+
+    function end() {
+      if (!isDown) return;
+      isDown = false;
+      track.classList.remove('is-dragging');
+      var v = -vel * 16;
+      var scroll = track.scrollLeft;
+      if (Math.abs(v) < 1) { doSnap(scroll, 0); return; }
+      if (Math.abs(v) > 8) { doSnap(scroll, v); return; }
+      cancelAnimationFrame(momId);
+      momId = requestAnimationFrame(function glide() {
+        v *= 0.88;
+        track.scrollLeft += v;
+        if (Math.abs(v) > 1.2) { momId = requestAnimationFrame(glide); }
+        else { doSnap(track.scrollLeft, 0); }
+      });
+    }
+
+    // Mouse
+    track.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return;
+      begin(e.clientX, e.clientY);
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function (e) { move(e.clientX, e.clientY, false); });
+    document.addEventListener('mouseup', end);
+    document.addEventListener('mouseleave', end);
+    track.addEventListener('click', function (e) {
+      if (hasDragged) { e.preventDefault(); e.stopPropagation(); }
+    }, true);
+
+    // Touch
+    track.addEventListener('touchstart', function (e) {
+      var t = e.touches[0];
+      begin(t.clientX, t.clientY);
+    }, { passive: true });
+    track.addEventListener('touchmove', function (e) {
+      var t = e.touches[0];
+      var handled = move(t.clientX, t.clientY, true);
+      if (handled) e.preventDefault();
+    }, { passive: false });
+    track.addEventListener('touchend', function (e) {
+      if (e.changedTouches.length) end();
+    }, { passive: true });
+  })();
+
+  // ── Story scroll — wheel-only activation ──────────────────────────────────
+  // Scrollbar drag bypasses WOW freely — section is 100vh, no extra scroll space.
+  // Only wheel/trackpad pins the section (position:fixed) and advances steps.
+  // Anchor links abort immediately via cleanupExit() — no delay.
+  (function () {
+    var section    = document.getElementById('storyScroll');
+    if (!section) return;
+    if (window.innerWidth < 768) return;
+
+    var stickyEl   = section.querySelector('.story-sticky');
+    var imgEl      = section.querySelector('.story-img');
+    var panelsWrap = section.querySelector('.story-panels-wrap');
+    var panels     = Array.from(section.querySelectorAll('.story-panel'));
+    var dots       = Array.from(section.querySelectorAll('.story-dot'));
+    var introSec   = section.nextElementSibling;
+    var navEl      = document.getElementById('navShell');
+    var STEPS      = panels.length;
+    var cur        = 0;
+    var busy       = false;
+    var pinned     = false;
+    var exiting    = false;
+
+    var DUR       = '0.86s';
+    var EASE      = 'cubic-bezier(0.22,1,0.36,1)';
+    var EXIT_EASE = 'cubic-bezier(0.22,1,0.36,1)';
+    var T         = 'opacity ' + DUR + ' ' + EASE + ',transform ' + DUR + ' ' + EASE;
+
+    function sectionAbsTop() {
+      return section.getBoundingClientRect().top + window.scrollY;
+    }
+
+    // ── Pin: apply position:fixed, glide entry ──────────────────────────
+    function pin() {
+      if (pinned) return;
+      pinned = true;
+      var offsetFromTop = Math.round(Math.max(0, section.getBoundingClientRect().top));
+      if (imgEl)      imgEl.style.opacity       = '';
+      if (panelsWrap) panelsWrap.style.transform = '';
+      stickyEl.style.position = 'fixed';
+      stickyEl.style.top      = '0';
+      stickyEl.style.left     = '0';
+      stickyEl.style.width    = '100%';
+      stickyEl.style.zIndex   = '10';
+      stickyEl.style.opacity  = '';
+      showInstant(cur);
+      if (navEl) {
+        var wasHidden = navEl.classList.contains('nav-hidden');
+        navEl.classList.remove('nav-hidden');
+        if (wasHidden) {
+          // Snap directly — avoid transition flash from translateY(-120%) to translateY(-14px)
+          navEl.style.transition = 'none';
+          navEl.classList.add('nav-wow');
+          void navEl.offsetHeight;
+          navEl.style.transition = '';
+        } else {
+          navEl.classList.add('nav-wow');
+        }
+      }
+      if (offsetFromTop > 2) {
+        stickyEl.style.transition = 'none';
+        stickyEl.style.transform  = 'translateY(' + offsetFromTop + 'px)';
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            stickyEl.style.transition = 'transform 0.42s cubic-bezier(0.22,1,0.36,1)';
+            stickyEl.style.transform  = 'translateY(0)';
+            setTimeout(function () { stickyEl.style.transition = ''; stickyEl.style.transform = ''; }, 460);
+          });
+        });
+      } else {
+        stickyEl.style.transform = '';
+      }
+    }
+
+    // ── Unpin: remove fixed, jump scroll to correct position ────────────
+    function unpin(dir) {
+      if (!pinned) return;
+      var pageTop = sectionAbsTop();
+      pinned = false;
+      stickyEl.style.transition = '';
+      stickyEl.style.position   = '';
+      stickyEl.style.top        = '';
+      stickyEl.style.left       = '';
+      stickyEl.style.width      = '';
+      stickyEl.style.zIndex     = '';
+      stickyEl.style.opacity    = '';
+      stickyEl.style.transform  = '';
+      if (panelsWrap) panelsWrap.style.transform = '';
+      if (imgEl)      imgEl.style.opacity = '';
+      if (navEl)      navEl.classList.remove('nav-wow');
+      if (dir > 0) {
+        window.scrollTo({ top: pageTop + section.offsetHeight, behavior: 'instant' });
+      } else {
+        window.scrollTo({ top: Math.max(0, pageTop - 1), behavior: 'instant' });
+      }
+    }
+
+    // ── cleanupExit: instant abort — called by anchor links ─────────────
+    function cleanupExit() {
+      exiting = false;
+      pinned  = false;
+      stickyEl.style.cssText = '';
+      if (panelsWrap) panelsWrap.style.transform = '';
+      if (imgEl)      imgEl.style.opacity = '';
+      if (navEl)      navEl.classList.remove('nav-wow');
+      if (introSec) {
+        introSec.style.transition = '';
+        introSec.style.opacity    = '';
+        introSec.style.transform  = '';
+      }
+    }
+
+    // ── smoothExit: forward exit (wheel only) ────────────────────────────
+    // introSec is intentionally NOT manipulated — any opacity/transform on it
+    // can create a gap where the dark story-sticky background bleeds through.
+    function smoothExit() {
+      if (exiting) return;
+      exiting = true;
+      pinned  = false;
+
+      // Flush scroll so section top is exactly at viewport top — hides hero bleed-through.
+      // stickyEl is still position:fixed covering the viewport, so this snap is invisible.
+      window.scrollTo({ top: sectionAbsTop(), behavior: 'instant' });
+
+      stickyEl.style.transition = 'opacity 0.36s ' + EXIT_EASE;
+      stickyEl.style.opacity    = '0';
+
+      setTimeout(function () {
+        if (!exiting) return;
+        var pageTop = sectionAbsTop();
+        // Remove position:fixed while keeping opacity:0 — no paint between these two
+        stickyEl.style.position   = '';
+        stickyEl.style.top        = '';
+        stickyEl.style.left       = '';
+        stickyEl.style.width      = '';
+        stickyEl.style.zIndex     = '';
+        stickyEl.style.transform  = '';
+        stickyEl.style.transition = 'none';
+        window.scrollTo({ top: pageTop + section.offsetHeight, behavior: 'instant' });
+        if (navEl) navEl.classList.remove('nav-wow');
+        lastScroll   = window.scrollY;
+        stableScroll = window.scrollY;
+        // Element is above viewport now — safe to clear residual opacity
+        requestAnimationFrame(function () {
+          stickyEl.style.opacity    = '';
+          stickyEl.style.transition = '';
+          exiting = false;
+        });
+      }, 380);
+    }
+
+    function showInstant(idx) {
+      panels.forEach(function (p, i) {
+        p.classList.remove('sp-active');
+        p.style.transition = 'none';
+        p.style.opacity    = i === idx ? '1' : '0';
+        p.style.transform  = 'translateY(0)';
+      });
+      panels[idx].classList.add('sp-active');
+      dots.forEach(function (d, i) { d.classList.toggle('sd-active', i === idx); });
+      if (imgEl) {
+        imgEl.style.transition = 'none';
+        imgEl.style.transform  = 'scale(' + (1 + (idx / (STEPS - 1)) * 0.05).toFixed(4) + ')';
+      }
+      requestAnimationFrame(function () {
+        panels.forEach(function (p) { p.style.transition = T; });
+        if (imgEl) imgEl.style.transition = 'transform 0.95s ' + EASE;
+      });
+      cur = idx;
+    }
+
+    function go(step, dir) {
+      var old = panels[cur];
+      var np  = panels[step];
+      old.classList.remove('sp-active');
+      old.style.transition = T;
+      old.style.opacity    = '0';
+      old.style.transform  = 'translateY(' + (dir > 0 ? -26 : 26) + 'px)';
+      np.style.transition  = 'none';
+      np.style.opacity     = '0';
+      np.style.transform   = 'translateY(' + (dir > 0 ? 30 : -30) + 'px)';
+      void np.offsetHeight;
+      np.style.transition  = T;
+      np.style.opacity     = '1';
+      np.style.transform   = 'translateY(0)';
+      np.classList.add('sp-active');
+      cur = step;
+      if (imgEl) {
+        imgEl.style.transition = 'transform 0.95s ' + EASE;
+        imgEl.style.transform  = 'scale(' + (1 + (step / (STEPS - 1)) * 0.05).toFixed(4) + ')';
+      }
+      dots.forEach(function (d, i) { d.classList.toggle('sd-active', i === step); });
+    }
+
+    showInstant(0);
+
+    // ── Scroll listener: buffer animation only, never activates WOW ─────
+    // Scrollbar drag goes here and is completely ignored for WOW purposes.
+    window.addEventListener('scroll', function () {
+      if (pinned || exiting) {
+        // Belt-and-suspenders: re-apply nav-wow if something stripped it while pinned
+        if (pinned && navEl && !navEl.classList.contains('nav-wow')) {
+          navEl.classList.remove('nav-hidden');
+          navEl.classList.add('nav-wow');
+        }
+        return;
+      }
+      var rect = section.getBoundingClientRect();
+      var BUF  = 250;
+      if (rect.top > 0 && rect.top <= BUF) {
+        var t = 1 - rect.top / BUF;
+        if (imgEl) imgEl.style.opacity = (0.85 + 0.15 * t).toFixed(3);
+        if (panelsWrap) panelsWrap.style.transform = 'translateY(' + (24 - 24 * t).toFixed(1) + 'px)';
+      } else {
+        if (imgEl && imgEl.style.opacity !== '')              imgEl.style.opacity = '';
+        if (panelsWrap && panelsWrap.style.transform !== '')  panelsWrap.style.transform = '';
+      }
+    }, { passive: true });
+
+    // ── Wheel: the ONLY way to activate and advance WOW ─────────────────
+    window.addEventListener('wheel', function (e) {
+      if (exiting) { e.preventDefault(); return; }
+
+      var dir  = e.deltaY > 0 ? 1 : -1;
+      var rect = section.getBoundingClientRect();
+
+      if (!pinned) {
+        // Enter from top
+        if (dir > 0 && rect.top >= 0 && rect.top - e.deltaY <= 80) {
+          e.preventDefault();
+          cur = 0;
+          pin();
+          return;
+        }
+        // Enter from bottom (scrolling up past section)
+        if (dir < 0 && rect.bottom <= 0 && rect.bottom - e.deltaY >= -80) {
+          e.preventDefault();
+          cur = STEPS - 1;
+          pin();
+          return;
+        }
+        return;
+      }
+
+      // Pinned — advance/retreat steps
+      e.preventDefault();
+      var next = cur + dir;
+      if (next >= STEPS) { smoothExit(); return; }
+      if (next < 0)      { unpin(-1);    return; }
+      if (busy) return;
+      busy = true;
+      go(next, dir);
+      setTimeout(function () { busy = false; }, 720);
+    }, { passive: false });
+
+    // ── Touch swipe ──────────────────────────────────────────────────────
+    var tY = 0;
+    window.addEventListener('touchstart', function (e) { tY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchend', function (e) {
+      if (!pinned || exiting) return;
+      var dy  = tY - e.changedTouches[0].clientY;
+      if (Math.abs(dy) < 40) return;
+      var dir  = dy > 0 ? 1 : -1;
+      var next = cur + dir;
+      if (next < 0)      { unpin(-1);    return; }
+      if (next >= STEPS) { smoothExit(); return; }
+      if (!busy) { busy = true; go(next, dir); setTimeout(function () { busy = false; }, 720); }
+    }, { passive: true });
+
+    // ── Anchor links: zero delay, immediate abort ─────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var href = a.getAttribute('href');
+        e.preventDefault();
+        if (pinned || exiting) cleanupExit();
+        if (!href || href === '#') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          var target = document.querySelector(href);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  })();
+
+  // ── Image fade-in on load ─────────────────────────────────────
+  document.querySelectorAll(
+    '.svc-thumb img, .art-thumb img, .feature-img img, .standort-photo img'
+  ).forEach(img => {
+    img.classList.add('img-fade');
+    if (img.complete && img.naturalWidth) {
+      img.classList.add('loaded');
+    } else {
+      img.addEventListener('load', () => img.classList.add('loaded'));
+    }
+  });
+</script>
+<script src="counter.js"></script>
+<script src="clinic-hours.js"></script>
+
+</body>
+</html>

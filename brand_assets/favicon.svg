@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>CPK Hagen</title>
+  <!-- CPK — heavy, brand green, tightly tracked -->
+  <text x="32" y="21"
+    font-family="'Arial Black','Helvetica Neue',Arial,sans-serif"
+    font-weight="900" font-size="20" fill="#2D5A2A"
+    text-anchor="middle" letter-spacing="-0.5">CPK</text>
+  <!-- Left scissor arm: ring handle at top-left, blade to bottom-right -->
+  <line x1="13" y1="31" x2="52" y2="62"
+    stroke="#1A1A18" stroke-width="4.5" stroke-linecap="round"/>
+  <circle cx="11" cy="29" r="5.5"
+    fill="none" stroke="#1A1A18" stroke-width="3"/>
+  <!-- Right scissor arm: ring handle at top-right, blade to bottom-left -->
+  <line x1="51" y1="31" x2="12" y2="62"
+    stroke="#1A1A18" stroke-width="4.5" stroke-linecap="round"/>
+  <circle cx="53" cy="29" r="5.5"
+    fill="none" stroke="#1A1A18" stroke-width="3"/>
+  <!-- Pivot at crossing point (32, 46.5) -->
+  <circle cx="32" cy="46.5" r="4"
+    fill="white" stroke="#1A1A18" stroke-width="2.5"/>
+</svg>

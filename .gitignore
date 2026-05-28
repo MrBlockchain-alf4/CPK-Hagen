@@ -1,0 +1,10 @@
+# Dev utilities — not part of the deployed site
+temporary screenshots/
+screenshot*.mjs
+screenshot*.cjs
+snap-*.mjs
+serve.mjs
+generate-favicon.mjs
+node_modules/
+baselarea.swiss_*.png
+CLAUDE.md
