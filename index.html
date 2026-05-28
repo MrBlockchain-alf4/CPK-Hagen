@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>CPK Hagen — Chirurgische Praxisklinik</title>
   <link rel="icon" href="brand_assets/favicon.png" type="image/png" />
   <link rel="apple-touch-icon" href="brand_assets/cpk-logo.png" />
@@ -1684,13 +1684,35 @@
     @media (max-width: 768px) {
       .nav-shell { top: 12px; width: calc(100% - 32px); }
 
+      /* iOS Safari: dark html background fills safe-area/rubber-band zones
+         so the hero overlay colour continues behind the bottom bar. */
+      html { background: #111C12; }
+
+      /* Hero — true fullscreen on iOS Safari.
+         100dvh adjusts dynamically as the browser chrome shows/hides.
+         Fallback: 100vh for browsers that don't support dvh yet. */
+      .hero {
+        height: 100vh;
+        height: 100dvh;
+        min-height: 600px;
+      }
+
+      /* Push hero content above the home indicator */
+      .hero-content {
+        padding: 0 16px calc(56px + env(safe-area-inset-bottom, 0px));
+      }
+
+      /* Keep scroll cue above home indicator */
+      .hero-scroll {
+        bottom: calc(36px + env(safe-area-inset-bottom, 0px));
+      }
+
       /* Hero — lighter overlay + tighter bottom padding */
       .hero-overlay {
         background:
           linear-gradient(110deg,rgba(6,8,7,.80) 0%,rgba(8,11,9,.60) 38%,rgba(8,11,9,.20) 64%,rgba(8,11,9,.04) 100%),
           linear-gradient(to top,rgba(5,8,6,.62) 0%,transparent 52%);
       }
-      .hero-content { padding: 0 16px 56px; }
 
       /* Hero headline — reduced size + looser line-height on narrow screens */
       .hero-h1 {
@@ -1793,33 +1815,47 @@
         line-height: 1.14 !important;
       }
 
-      /* Footer — compact mobile layout */
-      footer { padding: 28px 0 20px; }
+      /* Navbar — keep hamburger fully inside pill on narrow screens */
+      .nav-pill { padding: 0 14px 0 14px; }
+      .nav-logo { margin-right: 0; }
+      .nav-logo img { max-height: 70px; height: auto; }
+
+      /* Footer — refined mobile layout */
+      footer { padding: 40px 0 32px; }
       .footer-inner { padding: 0 20px; }
       .footer-top {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        column-gap: 20px;
-        row-gap: 0;
-        padding-bottom: 0;
-        border-bottom: none;
+        column-gap: 24px;
+        row-gap: 28px;
+        padding-bottom: 28px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
       }
       .footer-brand {
         grid-column: 1 / -1;
-        padding-bottom: 14px;
-        margin-bottom: 4px;
+        padding-bottom: 22px;
+        margin-bottom: 0;
         border-bottom: 1px solid rgba(255,255,255,0.07);
       }
-      .footer-logo { margin-bottom: 10px; }
+      .footer-logo { margin-bottom: 12px; }
       .footer-logo img { width: 88px; }
-      .footer-brand p { font-size: 12px; line-height: 1.58; margin-bottom: 10px; max-width: 100%; }
-      .footer-socials { gap: 12px; }
-      .footer-col { padding: 8px 0; border-bottom: none; border-right: none; }
-      .footer-col h4 { margin-bottom: 8px; }
-      .footer-col ul a { font-size: 12.5px; line-height: 1.48; }
-      .footer-col ul li + li { margin-top: 5px; }
-      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 5px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.07); }
-      .footer-legal { flex-wrap: wrap; gap: 5px 12px; }
+      .footer-brand p { font-size: 12.5px; line-height: 1.64; margin-bottom: 12px; max-width: 100%; }
+      .footer-socials { gap: 14px; }
+      .footer-col { padding: 0; border-bottom: none; border-right: none; }
+      .footer-col h4 { margin-bottom: 12px; }
+      .footer-col ul a { font-size: 12.5px; line-height: 1.56; }
+      .footer-col ul li + li { margin-top: 9px; }
+      .footer-bottom {
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        padding-top: 22px;
+        border-top: 1px solid rgba(255,255,255,0.07);
+        text-align: center;
+      }
+      .footer-bottom p { text-align: center; }
+      .footer-legal { flex-wrap: wrap; gap: 6px 14px; justify-content: center; }
+      .footer-afa img { height: 30px; }
     }
 
     @media (max-width: 480px) {
